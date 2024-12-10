@@ -57,10 +57,9 @@ This version adds WebP support and improves memory usage efficiency. Recommended
 
 == Additional Info ==
 * For optimal performance, it's recommended to configure appropriate settings before uploading images
-* If your website uses caching plugins, you may need to clear the cache after changing settings
+* If your website uses caching plugins, you may need to clear the cache after changing setting
 
-
-
+ZH txt ver.
 
 Wordpress 是很流行的 CMS 系統，很多網站都採用這個來部署，而市面上也已經有不少避免編輯或商品上稿人員，把沒有縮圖的相機或手機直出大圖檔傳到網站去，造成網友讀取網頁變慢問題的 Wordpress 外掛程式，主要是進行圖片上傳時自動縮圖處理的，但很可惜他們大部分是商用軟體或綁一些比較複雜的功能。我自己寫了一個簡單的超輕量外掛程式(幾KB only)，專門處理在用戶、編輯上傳圖片時，自動將圖片尺寸縮小的 作業，除了JPG常見圖片格式外，也支援 WordPress 官方的 WebP 轉換，最佳化網站載入速度與節省儲存空間。
 
@@ -137,3 +136,5 @@ Wordpress 是很流行的 CMS 系統，很多網站都採用這個來部署，�
 
 * 為確保最佳效能，建議在上傳圖片前先進行適當的設定
 * 如果您的網站使用了快取外掛，可能需要在更改設定後清除快取
+* 作者:Ivan Lin / ivanusto@gmail.com
+* https://yblog.org
