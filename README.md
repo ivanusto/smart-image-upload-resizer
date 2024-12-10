@@ -1,5 +1,7 @@
 A lightweight WordPress plugin that automatically resizes uploaded images, supports WebP conversion, and optimizes website loading speed.
 
+<img class="alignnone size-full wp-image-4343" src="https://yblog.org/wp-content/uploads/2024/12/smart-image-upload-resizer.zip01.webp" alt="" width="778" height="661" />
+
 == Description ==
 Smart Image Upload Resizer is a simple yet powerful WordPress plugin that automatically adjusts image dimensions and quality during upload, with support for WebP format through WordPress's official advanced image format support plugin. It helps optimize your website's image resources.
 
@@ -14,7 +16,7 @@ Smart Image Upload Resizer is a simple yet powerful WordPress plugin that automa
 
 = How to Use =
 1. Install and activate the plugin through the WordPress plugins page
-2. Go to "Settings" > "Smart Image Upload Resizer Settings"
+2. Go to "Settings" &gt; "Smart Image Upload Resizer Settings"
 3. Configure your desired maximum width, height, and image quality
 4. Start uploading images, the plugin will process them automatically
 
@@ -28,7 +30,7 @@ Smart Image Upload Resizer is a simple yet powerful WordPress plugin that automa
 1. Download and install "Smart Image Upload Resizer" from the WordPress plugin directory
 2. Or upload the zip file via WordPress admin panel
 3. Activate the plugin
-4. Go to "Settings" > "Image Resizer Settings" to configure
+4. Go to "Settings" &gt; "Image Resizer Settings" to configure
 
 == Frequently Asked Questions ==
 = Will this plugin affect already uploaded images? =
@@ -57,12 +59,12 @@ This version adds WebP support and improves memory usage efficiency. Recommended
 
 == Additional Info ==
 * For optimal performance, it's recommended to configure appropriate settings before uploading images
-* If your website uses caching plugins, you may need to clear the cache after changing setting
+* If your website uses caching plugins, you may need to clear the cache after changing settings
 * Author: Ivan Lin
 * Contact Email: ivanusto@gmail.com
 * [https://yblog.org](https://yblog.org/smart-image-upload-resizer/)
 
-ZH txt ver.
+&nbsp;
 
 Wordpress 是很流行的 CMS 系統，很多網站都採用這個來部署，而市面上也已經有不少避免編輯或商品上稿人員，把沒有縮圖的相機或手機直出大圖檔傳到網站去，造成網友讀取網頁變慢問題的 Wordpress 外掛程式，主要是進行圖片上傳時自動縮圖處理的，但很可惜他們大部分是商用軟體或綁一些比較複雜的功能。我自己寫了一個簡單的超輕量外掛程式(幾KB only)，專門處理在用戶、編輯上傳圖片時，自動將圖片尺寸縮小的 作業，除了JPG常見圖片格式外，也支援 WordPress 官方的 WebP 轉換，最佳化網站載入速度與節省儲存空間。
 
@@ -70,9 +72,15 @@ Wordpress 是很流行的 CMS 系統，很多網站都採用這個來部署，�
 
 目前這個外掛已經在一些上線的網站上進行實裝運用，而 Wordpress官方的審核上架通過則還要等一段時間，拭目以待。
 
+<img class="alignnone size-full wp-image-4343" src="https://yblog.org/wp-content/uploads/2024/12/smart-image-upload-resizer.zip01.webp" alt="" width="778" height="661" />
+
 設定相當簡單直覺。
 
+<img class="alignnone size-full wp-image-4340" src="https://yblog.org/wp-content/uploads/2024/12/smart-image-upload-resizer.zip02.webp" alt="" width="983" height="748" />
+
 可有效縮小圖片的尺寸，超大圖檔11MB的可以縮小到幾十KB。
+
+<img class="alignnone size-medium wp-image-4341" src="https://yblog.org/wp-content/uploads/2024/12/smart-image-upload-resizer.zip03.webp" alt="" width="987" height="508" />
 
 縮圖的品質設定在80%到85%就很不錯了。
 
@@ -89,7 +97,7 @@ Wordpress 是很流行的 CMS 系統，很多網站都採用這個來部署，�
 = 使用方式 =
 
 1. 透過 WordPress 安裝外掛程式頁進行安裝並啟用外掛
-2. 前往「設定」>「圖片上傳自動縮圖器設定」
+2. 前往「設定」&gt;「圖片上傳自動縮圖器設定」
 3. 設定您想要的最大寬度、高度和圖片品質
 4. 開始上傳圖片，外掛會自動處理
 
@@ -105,7 +113,7 @@ Wordpress 是很流行的 CMS 系統，很多網站都採用這個來部署，�
 1. 從 WordPress 外掛目錄下載並安裝「圖片上傳自動縮圖器」
 2. 或者在 WordPress 後台上傳 zip 檔案安裝
 3. 啟用外掛
-4. 前往「設定」>「圖片縮圖設定」進行設定
+4. 前往「設定」&gt;「圖片縮圖設定」進行設定
 
 == Frequently Asked Questions ==
 
