@@ -58,6 +58,9 @@ This version adds WebP support and improves memory usage efficiency. Recommended
 == Additional Info ==
 * For optimal performance, it's recommended to configure appropriate settings before uploading images
 * If your website uses caching plugins, you may need to clear the cache after changing setting
+* Author: Ivan Lin
+* Contact Email: ivanusto@gmail.com
+* [https://yblog.org](https://yblog.org/smart-image-upload-resizer/)
 
 ZH txt ver.
 
@@ -136,5 +139,6 @@ Wordpress 是很流行的 CMS 系統，很多網站都採用這個來部署，�
 
 * 為確保最佳效能，建議在上傳圖片前先進行適當的設定
 * 如果您的網站使用了快取外掛，可能需要在更改設定後清除快取
-* 作者:Ivan Lin / ivanusto@gmail.com
-* https://yblog.org
+* 作者: Ivan Lin
+* Contact Email: ivanusto@gmail.com
+* [https://yblog.org](https://yblog.org/smart-image-upload-resizer/)
