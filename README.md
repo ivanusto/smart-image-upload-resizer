@@ -34,6 +34,7 @@ Smart Image Upload Resizer is a simple yet powerful WordPress plugin that automa
 4. Go to "Settings" &gt; "Image Resizer Settings" to configure
 
 == Frequently Asked Questions ==
+
 = Will this plugin affect already uploaded images? =
 No. The plugin only processes new images uploaded after activation.
 
