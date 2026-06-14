@@ -4,10 +4,10 @@ Tags: image, resize, upload, optimization, webp
 Requires at least: 5.0
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: Apache-2.0
 License URI: https://opensource.org/license/apache-2-0
-Plugin URI: https://yblog.org/smart-image-upload-resizer 
+Plugin URI: https://yblog.org/smart-image-upload-resizer
 Plugin Name (EN): Smart Image Upload Resizer
 Author: Ivan Lin
 Author URI: https://yblog.org/
@@ -22,6 +22,7 @@ Smart Image Upload Resizer is a simple yet powerful WordPress plugin that automa
 * Customizable maximum width and height (up to 2560 pixels)
 * Adjustable image quality (compression rate)
 * Supports JPEG, PNG, GIF, and WebP formats
+* Preserves PNG and GIF transparency during resize
 * Compatible with WordPress's official advanced image format support plugin
 * Automatically maintains image aspect ratio
 * Optimized memory management for low-spec cloud hosting environments
@@ -57,15 +58,32 @@ For stability on older cloud hosting specifications, the maximum supported dimen
 = How's the image quality after adjustment? =
 You can customize image quality (1-100%) in settings, default is 80%. This value typically provides a good balance between file size and visual quality. For better visual quality, you can increase it to 85.
 
+= Does the plugin require any PHP extensions? =
+Yes, the PHP GD extension is required. The plugin will notify you and deactivate automatically if GD is not available.
+
 == Screenshots ==
 1. Plugin settings page
 2. Image upload effect demonstration
 
 == Changelog ==
+= 1.1.0 =
+* Fix: Preserve PNG and GIF transparency during image resize
+* Fix: Ensure GD resources are always freed even when an error occurs (memory leak fix)
+* Security: Added sanitize_callback to validate and clamp settings values on save
+* Security: Added capability check in options page
+* Security: Use esc_url() for settings link URL
+* Improvement: HTML min/max attributes on settings inputs to match server-side constraints
+* Improvement: GD extension check on plugin activation with a clear error message
+* Improvement: Render functions now use cached options instead of extra DB queries
+* Improvement: Settings link placed first in the plugin action links list
+
 = 1.0.0 =
 * Initial release
 
 == Upgrade Notice ==
+= 1.1.0 =
+This version fixes PNG/GIF transparency preservation, patches a memory leak, and adds settings sanitization. Recommended update for all users.
+
 = 1.0.0 =
 This version adds WebP support and improves memory usage efficiency. Recommended update for all users.
 
