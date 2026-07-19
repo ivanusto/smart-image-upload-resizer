@@ -1,0 +1,25 @@
+name: Release Plugin
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Build plugin ZIP
+        run: |
+          git archive --format=zip --prefix=smart-image-upload-resizer/ HEAD -o smart-image-resizer.zip
+          
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: smart-image-resizer.zip
+          generate_release_notes: true
