@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Smart Image Upload Resizer
  * Plugin URI: https://yblog.org/smart-image-upload-resizer
- * Description: 自動調整上傳圖片尺寸的 WordPress 外掛，支援 WebP 轉換
- * Version: 1.1.0
+ * Description: 自動調整上傳圖片尺寸的 WordPress 外掛，支援 WebP 與 AVIF 轉換
+ * Version: 1.2.0
  * Plugin Name (EN): Smart Image Upload Resizer
  * Author: Ivan Lin
  * Author URI: https://yblog.org/
@@ -50,7 +50,9 @@ class SmartImageUploadResizer {
             case 'image/gif':
                 return imagecreatefromgif($file_path);
             case 'image/webp':
-                return imagecreatefromwebp($file_path);
+                return function_exists('imagecreatefromwebp') ? imagecreatefromwebp($file_path) : false;
+            case 'image/avif':
+                return function_exists('imagecreatefromavif') ? imagecreatefromavif($file_path) : false;
             default:
                 return false;
         }
@@ -91,7 +93,9 @@ class SmartImageUploadResizer {
             case 'image/gif':
                 return imagegif($image, $file_path);
             case 'image/webp':
-                return imagewebp($image, $file_path, $quality);
+                return function_exists('imagewebp') ? imagewebp($image, $file_path, $quality) : false;
+            case 'image/avif':
+                return function_exists('imageavif') ? imageavif($image, $file_path, $quality) : false;
             default:
                 return false;
         }
@@ -115,6 +119,11 @@ class SmartImageUploadResizer {
 
     public function preHandleUpload($file) {
         if (!preg_match('!^image/!', $file['type'])) {
+            return $file;
+        }
+
+        $supported_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
+        if (!in_array($file['type'], $supported_types)) {
             return $file;
         }
 

@@ -1,10 +1,10 @@
 === Smart Image Upload Resizer ===
 Contributors: ivanusto
-Tags: image, resize, upload, optimization, webp
+Tags: image, resize, upload, optimization, webp, avif
 Requires at least: 5.0
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: Apache-2.0
 License URI: https://opensource.org/license/apache-2-0
 Plugin URI: https://yblog.org/smart-image-upload-resizer
@@ -12,16 +12,16 @@ Plugin Name (EN): Smart Image Upload Resizer
 Author: Ivan Lin
 Author URI: https://yblog.org/
 
-A lightweight WordPress plugin that automatically resizes uploaded images, supports WebP conversion, and optimizes website loading speed.
+A lightweight WordPress plugin that automatically resizes uploaded images, supports WebP and AVIF conversion, and optimizes website loading speed.
 
 == Description ==
-Smart Image Upload Resizer is a simple yet powerful WordPress plugin that automatically adjusts image dimensions and quality during upload, with support for WebP format through WordPress's official advanced image format support plugin. It helps optimize your website's image resources.
+Smart Image Upload Resizer is a simple yet powerful WordPress plugin that automatically adjusts image dimensions and quality during upload, with support for WebP and AVIF formats through WordPress's official advanced image format support plugin. It helps optimize your website's image resources.
 
 = Key Features =
 * Automatically reduces uploaded image dimensions
 * Customizable maximum width and height (up to 2560 pixels)
 * Adjustable image quality (compression rate)
-* Supports JPEG, PNG, GIF, and WebP formats
+* Supports JPEG, PNG, GIF, WebP, and AVIF formats
 * Preserves PNG and GIF transparency during resize
 * Compatible with WordPress's official advanced image format support plugin
 * Automatically maintains image aspect ratio
@@ -52,7 +52,7 @@ This plugin is one of the origin projects of Omni Webmaster & SEO Suite, an all-
 No. The plugin only processes new images uploaded after activation.
 
 = What image formats are supported? =
-JPEG, PNG, GIF, and WebP formats are supported.
+JPEG, PNG, GIF, WebP, and AVIF formats are supported. (AVIF requires PHP 8.1+)
 
 = What's the maximum supported image size? =
 For stability on older cloud hosting specifications, the maximum supported dimension is 2560 pixels.
@@ -68,6 +68,11 @@ Yes, the PHP GD extension is required. The plugin will notify you and deactivate
 2. Image upload effect demonstration
 
 == Changelog ==
+= 1.2.0 =
+* Feature: Added support for AVIF image format (requires PHP 8.1+ and GD AVIF support)
+* Fix: Prevent upload failure when uploading unsupported image types (e.g., SVG, ICO) by ignoring them instead of throwing an error
+* Improvement: Added `function_exists` checks for WebP and AVIF to prevent fatal errors on servers without support
+
 = 1.1.0 =
 * Fix: Preserve PNG and GIF transparency during image resize
 * Fix: Ensure GD resources are always freed even when an error occurs (memory leak fix)
@@ -83,6 +88,9 @@ Yes, the PHP GD extension is required. The plugin will notify you and deactivate
 * Initial release
 
 == Upgrade Notice ==
+= 1.2.0 =
+This version adds AVIF support and fixes a critical bug where uploading unsupported formats like SVG caused the upload to fail completely. Recommended update.
+
 = 1.1.0 =
 This version fixes PNG/GIF transparency preservation, patches a memory leak, and adds settings sanitization. Recommended update for all users.
 
