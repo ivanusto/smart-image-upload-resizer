@@ -1,4 +1,4 @@
-A lightweight WordPress plugin that automatically resizes uploaded images, supports WebP conversion, and optimizes website loading speed.
+A lightweight WordPress plugin that automatically resizes uploaded images, supports WebP/AVIF conversion, and optimizes website loading speed.
 
 <img class="alignnone size-full wp-image-4343" src="https://yblog.org/wp-content/uploads/2024/12/smart-image-upload-resizer.zip01.webp" alt="" width="778" height="661" />
 
