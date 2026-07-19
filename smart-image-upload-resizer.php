@@ -218,14 +218,14 @@ class SmartImageUploadResizer {
 
     public function maxWidthRender() {
         $value = (int) ($this->options['max_width'] ?? SIR_DEFAULTS['max_width']);
-        echo '<input type="number" min="1" max="' . SIR_MAX_DIMENSION . '" name="sir_settings[max_width]" value="' . esc_attr($value) . '">';
-        echo '<span> px (Max ' . SIR_MAX_DIMENSION . ')</span>';
+        echo '<input type="number" min="1" max="' . esc_attr(SIR_MAX_DIMENSION) . '" name="sir_settings[max_width]" value="' . esc_attr($value) . '">';
+        echo '<span> px (Max ' . esc_html(SIR_MAX_DIMENSION) . ')</span>';
     }
 
     public function maxHeightRender() {
         $value = (int) ($this->options['max_height'] ?? SIR_DEFAULTS['max_height']);
-        echo '<input type="number" min="1" max="' . SIR_MAX_DIMENSION . '" name="sir_settings[max_height]" value="' . esc_attr($value) . '">';
-        echo '<span> px (Max ' . SIR_MAX_DIMENSION . ')</span>';
+        echo '<input type="number" min="1" max="' . esc_attr(SIR_MAX_DIMENSION) . '" name="sir_settings[max_height]" value="' . esc_attr($value) . '">';
+        echo '<span> px (Max ' . esc_html(SIR_MAX_DIMENSION) . ')</span>';
     }
 
     public function qualityRender() {
@@ -235,8 +235,8 @@ class SmartImageUploadResizer {
     }
 
     public function settingsSectionCallback() {
-        echo 'Configuring maximum upload dimensions and quality for images (maximum dimension is restricted to ' . SIR_MAX_DIMENSION . ' pixels). '
-           . '設定上傳圖片時的最大尺寸與品質（最大尺寸限制為 ' . SIR_MAX_DIMENSION . ' 像素）。';
+        echo 'Configuring maximum upload dimensions and quality for images (maximum dimension is restricted to ' . esc_html(SIR_MAX_DIMENSION) . ' pixels). '
+           . '設定上傳圖片時的最大尺寸與品質（最大尺寸限制為 ' . esc_html(SIR_MAX_DIMENSION) . ' 像素）。';
     }
 
     public function optionsPage() {

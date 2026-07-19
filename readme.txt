@@ -1,8 +1,8 @@
 === Smart Image Upload Resizer ===
 Contributors: ivanusto
-Tags: image, resize, upload, optimization, webp, avif
+Tags: image, resize, upload, webp, avif
 Requires at least: 5.0
-Tested up to: 6.7.1
+Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: 1.2.0
 License: Apache-2.0
