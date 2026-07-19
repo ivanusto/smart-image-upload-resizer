@@ -39,6 +39,8 @@ Smart Image Upload Resizer is a simple yet powerful WordPress plugin that automa
 * Website loading speed optimization
 * Websites requiring unified image dimension management
 
+This plugin is one of the origin projects of Omni Webmaster & SEO Suite, an all-in-one webmaster toolkit by the same author that consolidates and optimizes these standalone plugins: https://github.com/ivanusto/omni-webmaster-seo-suite
+
 == Installation ==
 1. Download and install "Smart Image Upload Resizer" from the WordPress plugin directory
 2. Or upload the zip file via WordPress admin panel
