@@ -201,3 +201,7 @@ Wordpress 是很流行的 CMS 系統，很多網站都採用這個來部署，�
 * 作者: Ivan Lin
 * Contact Email: ivanusto@gmail.com
 * [https://yblog.org](https://yblog.org/smart-image-upload-resizer/)
+
+## License / 授權條款
+
+This project is licensed under the [GNU General Public License v2.0 or later (GPL-2.0-or-later)](LICENSE).
