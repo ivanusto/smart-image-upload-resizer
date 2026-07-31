@@ -8,8 +8,8 @@
  * Author: Ivan Lin
  * Author URI: https://yblog.org/
  * Text Domain: smart-image-upload-resizer
- * License: Apache-2.0
- * License URI: https://opensource.org/license/apache-2-0
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 if (!defined('ABSPATH')) {
