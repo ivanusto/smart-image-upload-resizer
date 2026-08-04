@@ -1,13 +1,15 @@
 <?php
 /**
  * Plugin Name: Smart Image Upload Resizer
- * Plugin URI: https://yblog.org/smart-image-upload-resizer
- * Description: 自動調整上傳圖片尺寸的 WordPress 外掛，支援 WebP 與 AVIF 轉換
- * Version: 1.2.0
- * Plugin Name (EN): Smart Image Upload Resizer
+ * Plugin URI: https://github.com/ivanusto/smart-image-upload-resizer
+ * Description: Automatically resizes uploaded images to configurable maximum dimensions, with WebP and AVIF support.
+ * Version: 1.3.0
  * Author: Ivan Lin
  * Author URI: https://yblog.org/
  * Text Domain: smart-image-upload-resizer
+ * Domain Path: /languages
+ * Requires at least: 5.0
+ * Requires PHP: 7.4
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -29,10 +31,18 @@ class SmartImageUploadResizer {
     public function __construct() {
         $this->options = get_option('sir_settings', SIR_DEFAULTS);
 
+        add_action('init', [$this, 'loadTextdomain']);
         add_action('admin_menu', [$this, 'addAdminMenu']);
         add_action('admin_init', [$this, 'settingsInit']);
         add_filter('wp_handle_upload_prefilter', [$this, 'preHandleUpload']);
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), [$this, 'addSettingsLink']);
+    }
+
+    public function loadTextdomain() {
+        // This plugin is distributed via GitHub, not WordPress.org, so the bundled
+        // /languages translations must be loaded manually.
+        // phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound
+        load_plugin_textdomain('smart-image-upload-resizer', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
     private function increaseMemoryLimit() {
@@ -117,13 +127,23 @@ class SmartImageUploadResizer {
         return [$new_width, $new_height];
     }
 
+    /**
+     * Resize the uploaded image in its temporary location when it exceeds
+     * the configured bounds. Any failure returns the file untouched so the
+     * upload always succeeds with the original image.
+     */
     public function preHandleUpload($file) {
-        if (!preg_match('!^image/!', $file['type'])) {
+        // GD may have been removed after activation (e.g. PHP version change)
+        if (!extension_loaded('gd')) {
+            return $file;
+        }
+
+        if (empty($file['type']) || strpos($file['type'], 'image/') !== 0) {
             return $file;
         }
 
         $supported_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
-        if (!in_array($file['type'], $supported_types)) {
+        if (!in_array($file['type'], $supported_types, true)) {
             return $file;
         }
 
@@ -135,7 +155,7 @@ class SmartImageUploadResizer {
 
             $image_size = getimagesize($file['tmp_name']);
             if (!$image_size) {
-                throw new Exception('無法獲取圖片尺寸');
+                return $file;
             }
 
             [$orig_width, $orig_height] = $image_size;
@@ -151,7 +171,7 @@ class SmartImageUploadResizer {
 
             $source_image = $this->createImageFromFile($file['tmp_name'], $file['type']);
             if (!$source_image) {
-                throw new Exception('無法建立圖片資源');
+                return $file;
             }
 
             $resized_image = $this->resizeImage(
@@ -162,17 +182,15 @@ class SmartImageUploadResizer {
             );
 
             if (!$resized_image) {
-                throw new Exception('無法調整圖片大小');
+                return $file;
             }
 
             if (!$this->saveImage($resized_image, $file['tmp_name'], $file['type'], (int) $this->options['quality'])) {
-                throw new Exception('無法儲存圖片');
+                return $file;
             }
 
             $file['size'] = filesize($file['tmp_name']);
 
-        } catch (Exception $e) {
-            $file['error'] = $e->getMessage();
         } finally {
             if ($source_image)  imagedestroy($source_image);
             if ($resized_image) imagedestroy($resized_image);
@@ -183,8 +201,8 @@ class SmartImageUploadResizer {
 
     public function addAdminMenu() {
         add_options_page(
-            '圖片上傳自動縮圖器設定',
-            '圖片上傳自動縮圖器',
+            __('Smart Image Upload Resizer Settings', 'smart-image-upload-resizer'),
+            __('Image Upload Resizer', 'smart-image-upload-resizer'),
             'manage_options',
             'smart-image-upload-resizer',
             [$this, 'optionsPage']
@@ -198,14 +216,14 @@ class SmartImageUploadResizer {
 
         add_settings_section(
             'sir_plugin_section',
-            'Image Size Option / 圖片尺寸設定',
+            __('Image Size Options', 'smart-image-upload-resizer'),
             [$this, 'settingsSectionCallback'],
             'sir_plugin'
         );
 
-        add_settings_field('max_width',  'Max Width / 最大寬度',    [$this, 'maxWidthRender'],  'sir_plugin', 'sir_plugin_section');
-        add_settings_field('max_height', 'Max Height / 最大高度',   [$this, 'maxHeightRender'], 'sir_plugin', 'sir_plugin_section');
-        add_settings_field('quality',    'Image Quality / 圖片品質', [$this, 'qualityRender'],   'sir_plugin', 'sir_plugin_section');
+        add_settings_field('max_width',  __('Max Width', 'smart-image-upload-resizer'),     [$this, 'maxWidthRender'],  'sir_plugin', 'sir_plugin_section');
+        add_settings_field('max_height', __('Max Height', 'smart-image-upload-resizer'),    [$this, 'maxHeightRender'], 'sir_plugin', 'sir_plugin_section');
+        add_settings_field('quality',    __('Image Quality', 'smart-image-upload-resizer'), [$this, 'qualityRender'],   'sir_plugin', 'sir_plugin_section');
     }
 
     public function sanitizeSettings($input) {
@@ -216,16 +234,24 @@ class SmartImageUploadResizer {
         return $sanitized;
     }
 
+    private function dimensionFieldRender($key) {
+        $value = (int) ($this->options[$key] ?? SIR_DEFAULTS[$key]);
+        echo '<input type="number" min="1" max="' . esc_attr(SIR_MAX_DIMENSION) . '" name="sir_settings[' . esc_attr($key) . ']" value="' . esc_attr($value) . '">';
+        echo '<span> ';
+        printf(
+            /* translators: %s: hard maximum dimension in pixels. */
+            esc_html__('px (max %s)', 'smart-image-upload-resizer'),
+            esc_html(SIR_MAX_DIMENSION)
+        );
+        echo '</span>';
+    }
+
     public function maxWidthRender() {
-        $value = (int) ($this->options['max_width'] ?? SIR_DEFAULTS['max_width']);
-        echo '<input type="number" min="1" max="' . esc_attr(SIR_MAX_DIMENSION) . '" name="sir_settings[max_width]" value="' . esc_attr($value) . '">';
-        echo '<span> px (Max ' . esc_html(SIR_MAX_DIMENSION) . ')</span>';
+        $this->dimensionFieldRender('max_width');
     }
 
     public function maxHeightRender() {
-        $value = (int) ($this->options['max_height'] ?? SIR_DEFAULTS['max_height']);
-        echo '<input type="number" min="1" max="' . esc_attr(SIR_MAX_DIMENSION) . '" name="sir_settings[max_height]" value="' . esc_attr($value) . '">';
-        echo '<span> px (Max ' . esc_html(SIR_MAX_DIMENSION) . ')</span>';
+        $this->dimensionFieldRender('max_height');
     }
 
     public function qualityRender() {
@@ -235,8 +261,11 @@ class SmartImageUploadResizer {
     }
 
     public function settingsSectionCallback() {
-        echo 'Configuring maximum upload dimensions and quality for images (maximum dimension is restricted to ' . esc_html(SIR_MAX_DIMENSION) . ' pixels). '
-           . '設定上傳圖片時的最大尺寸與品質（最大尺寸限制為 ' . esc_html(SIR_MAX_DIMENSION) . ' 像素）。';
+        printf(
+            /* translators: %s: hard maximum dimension in pixels. */
+            esc_html__('Configure the maximum dimensions and quality for uploaded images (each dimension is capped at %s pixels). Oversized images are resized proportionally at upload time; if resizing fails, the original image is uploaded unchanged.', 'smart-image-upload-resizer'),
+            esc_html(SIR_MAX_DIMENSION)
+        );
     }
 
     public function optionsPage() {
@@ -245,7 +274,12 @@ class SmartImageUploadResizer {
         }
         ?>
         <div class="wrap">
-            <h2>Smart Image Upload Resizer / 圖片上傳自動縮圖器設定</h2>
+            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            <?php if (!extension_loaded('gd')) : ?>
+                <div class="notice notice-warning">
+                    <p><?php esc_html_e('The PHP GD extension is not available on this server, so image resizing is currently skipped. Ask your hosting provider to enable GD.', 'smart-image-upload-resizer'); ?></p>
+                </div>
+            <?php endif; ?>
             <form action="options.php" method="post">
                 <?php
                 settings_fields('sir_plugin');
@@ -258,7 +292,7 @@ class SmartImageUploadResizer {
     }
 
     public function addSettingsLink($links) {
-        $settings_link = '<a href="' . esc_url(admin_url('options-general.php?page=smart-image-upload-resizer')) . '">設定</a>';
+        $settings_link = '<a href="' . esc_url(admin_url('options-general.php?page=smart-image-upload-resizer')) . '">' . esc_html__('Settings', 'smart-image-upload-resizer') . '</a>';
         array_unshift($links, $settings_link);
         return $links;
     }
@@ -269,7 +303,7 @@ new SmartImageUploadResizer();
 register_activation_hook(__FILE__, function () {
     if (!extension_loaded('gd')) {
         deactivate_plugins(plugin_basename(__FILE__));
-        wp_die('Smart Image Upload Resizer 需要 PHP GD 擴充功能，請聯絡主機商啟用後再安裝。');
+        wp_die(esc_html__('Smart Image Upload Resizer requires the PHP GD extension. Please ask your hosting provider to enable it, then activate the plugin again.', 'smart-image-upload-resizer'));
     }
 
     if (!get_option('sir_settings')) {

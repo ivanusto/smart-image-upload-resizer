@@ -28,7 +28,7 @@ Smart Image Upload Resizer is a simple yet powerful WordPress plugin that automa
 * Website loading speed optimization
 * Websites requiring unified image dimension management
 
-This plugin is one of the origin projects of Omni Webmaster & SEO Suite, an all-in-one webmaster toolkit by the same author that consolidates and optimizes these standalone plugins: https://github.com/ivanusto/omni-webmaster-seo-suite
+This plugin's functionality is also integrated into [Omni Webmaster & SEO Suite](https://wordpress.org/plugins/omni-webmaster-seo-suite/) ([GitHub](https://github.com/ivanusto/omni-webmaster-seo-suite)), an all-in-one webmaster toolkit by the same author. Do not run both at once — the suite automatically yields to this standalone plugin to avoid resizing images twice.
 
 == Installation ==
 1. Download and install "Smart Image Upload Resizer" from the WordPress plugin directory
@@ -51,13 +51,22 @@ For stability on older cloud hosting specifications, the maximum supported dimen
 You can customize image quality (1-100%) in settings, default is 80%. This value typically provides a good balance between file size and visual quality. For better visual quality, you can increase it to 85.
 
 = Does the plugin require any PHP extensions? =
-Yes, the PHP GD extension is required. The plugin will notify you and deactivate automatically if GD is not available.
+Yes, the PHP GD extension is required. The plugin will notify you and deactivate automatically if GD is not available at activation time. If GD disappears later (e.g. after a PHP version change), resizing is safely skipped and uploads proceed with the original images.
+
+= What happens if resizing fails? =
+Since 1.3.0, any failure (unreadable image, missing GD function, save error) lets the upload proceed with the original, untouched image instead of blocking the upload with an error.
 
 == Screenshots ==
 1. Plugin settings page
 2. Image upload effect demonstration
 
 == Changelog ==
+
+= 1.3.0 =
+* Improvement: Fail-safe uploads — if any resize step fails, the original image is now uploaded unchanged instead of the whole upload being aborted with an error
+* Improvement: Runtime GD check — if the GD extension disappears after activation, resizing is skipped safely instead of causing a fatal error on upload; a notice is shown on the settings page
+* Internationalization: All user-facing strings are now translatable (English base) with a bundled Traditional Chinese (zh_TW) translation
+* Cleanup: Fixed invalid plugin header fields and updated license metadata to GPLv2 or later
 
 = 1.2.0 =
 * Feature: Added support for AVIF image format (requires PHP 8.1+ and GD AVIF support)
@@ -137,7 +146,7 @@ Wordpress 是很流行的 CMS 系統，很多網站都採用這個來部署，�
 * 需要最佳化網站載入速度
 * 需要統一管理圖片尺寸的網站
 
-本外掛是 Omni Webmaster & SEO Suite（同作者整合最佳化多個獨立外掛的一站式站長工具套件）的起源專案之一：https://github.com/ivanusto/omni-webmaster-seo-suite
+本外掛的功能也已整合進 [Omni Webmaster & SEO Suite](https://wordpress.org/plugins/omni-webmaster-seo-suite/)（[GitHub](https://github.com/ivanusto/omni-webmaster-seo-suite)），同作者的一站式站長工具套件。請勿與本外掛同時啟用——套件偵測到本外掛時會自動停用對應模組，避免圖片被重複縮圖。
 
 == Installation ==
 
@@ -166,7 +175,11 @@ Wordpress 是很流行的 CMS 系統，很多網站都採用這個來部署，�
 
 = 外掛需要任何 PHP 擴充功能嗎？ =
 
-需要 PHP GD 擴充功能。若主機未安裝 GD，外掛在啟用時會顯示說明並自動停用。
+需要 PHP GD 擴充功能。若主機未安裝 GD，外掛在啟用時會顯示說明並自動停用。若啟用後 GD 才消失（例如更換 PHP 版本），縮圖會被安全略過、以原圖上傳，不會造成錯誤。
+
+= 縮圖失敗會發生什麼事？ =
+
+自 1.3.0 起，任何失敗（圖片無法讀取、GD 功能缺失、儲存錯誤）都會直接以原圖放行上傳，不再中斷上傳並顯示錯誤。
 
 == Screenshots ==
 
@@ -174,6 +187,12 @@ Wordpress 是很流行的 CMS 系統，很多網站都採用這個來部署，�
 2. 圖片上傳效果展示
 
 == Changelog ==
+
+= 1.3.0 =
+* 改善：上傳失敗安全機制——任何縮圖步驟失敗時，直接以原圖放行上傳，不再中斷整個上傳流程
+* 改善：執行期 GD 檢查——若啟用後 GD 擴充功能消失，縮圖會被安全略過而非在上傳時發生致命錯誤，並在設定頁顯示提示
+* 國際化：所有介面文字改為可翻譯（英文為基底），並內建繁體中文（zh_TW）翻譯
+* 整理：修正外掛標頭欄位並將授權資訊更新為 GPLv2 or later
 
 = 1.2.0 =
 * 新增：支援 AVIF 圖片格式（需主機環境支援 PHP 8.1+ 與 GD AVIF）

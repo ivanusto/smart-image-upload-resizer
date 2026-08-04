@@ -4,13 +4,9 @@ Tags: image, resize, upload, webp, avif
 Requires at least: 5.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.2.0
-License: Apache-2.0
-License URI: https://opensource.org/license/apache-2-0
-Plugin URI: https://yblog.org/smart-image-upload-resizer
-Plugin Name (EN): Smart Image Upload Resizer
-Author: Ivan Lin
-Author URI: https://yblog.org/
+Stable tag: 1.3.0
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 A lightweight WordPress plugin that automatically resizes uploaded images, supports WebP and AVIF conversion, and optimizes website loading speed.
 
@@ -39,7 +35,7 @@ Smart Image Upload Resizer is a simple yet powerful WordPress plugin that automa
 * Website loading speed optimization
 * Websites requiring unified image dimension management
 
-This plugin is one of the origin projects of Omni Webmaster & SEO Suite, an all-in-one webmaster toolkit by the same author that consolidates and optimizes these standalone plugins: https://github.com/ivanusto/omni-webmaster-seo-suite
+This plugin's functionality is also integrated into Omni Webmaster & SEO Suite, an all-in-one webmaster toolkit by the same author available on WordPress.org: https://wordpress.org/plugins/omni-webmaster-seo-suite/ — do not run both at once; the suite automatically yields to this standalone plugin to avoid resizing images twice.
 
 == Installation ==
 1. Download and install "Smart Image Upload Resizer" from the WordPress plugin directory
@@ -61,13 +57,23 @@ For stability on older cloud hosting specifications, the maximum supported dimen
 You can customize image quality (1-100%) in settings, default is 80%. This value typically provides a good balance between file size and visual quality. For better visual quality, you can increase it to 85.
 
 = Does the plugin require any PHP extensions? =
-Yes, the PHP GD extension is required. The plugin will notify you and deactivate automatically if GD is not available.
+Yes, the PHP GD extension is required. The plugin will notify you and deactivate automatically if GD is not available at activation time. If GD disappears later (e.g. after a PHP version change), resizing is safely skipped and uploads proceed with the original images.
+
+= What happens if resizing fails? =
+Since 1.3.0, any failure (unreadable image, missing GD function, save error) lets the upload proceed with the original, untouched image instead of blocking the upload with an error.
 
 == Screenshots ==
 1. Plugin settings page
 2. Image upload effect demonstration
 
 == Changelog ==
+= 1.3.0 =
+* Improvement: Fail-safe uploads — if any resize step fails, the original image is now uploaded unchanged instead of the whole upload being aborted with an error.
+* Improvement: Runtime GD check — if the GD extension disappears after activation (e.g. PHP version change), resizing is skipped safely instead of causing a fatal error on upload; a notice is shown on the settings page.
+* Internationalization: All user-facing strings are now translatable (English base) with a bundled Traditional Chinese (zh_TW) translation in /languages.
+* Cleanup: Fixed invalid plugin header fields (removed non-standard "Plugin Name (EN)", English description, added Requires at least / Requires PHP, Plugin URI now points to the GitHub repository).
+* Cleanup: Updated license metadata in readme.txt to GPLv2 or later to match the plugin header and bundled LICENSE.
+
 = 1.2.0 =
 * Feature: Added support for AVIF image format (requires PHP 8.1+ and GD AVIF support)
 * Fix: Prevent upload failure when uploading unsupported image types (e.g., SVG, ICO) by ignoring them instead of throwing an error
@@ -88,6 +94,9 @@ Yes, the PHP GD extension is required. The plugin will notify you and deactivate
 * Initial release
 
 == Upgrade Notice ==
+= 1.3.0 =
+Fail-safe uploads (failures no longer abort the upload), runtime GD guard against fatal errors, and full internationalization with bundled zh_TW translation. Recommended update for all users.
+
 = 1.2.0 =
 This version adds AVIF support and fixes a critical bug where uploading unsupported formats like SVG caused the upload to fail completely. Recommended update.
 
