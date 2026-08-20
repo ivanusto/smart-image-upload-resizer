@@ -62,6 +62,11 @@ Since 1.3.0, any failure (unreadable image, missing GD function, save error) let
 
 == Changelog ==
 
+= 1.4.0 =
+* Fixed: WordPress 7.1 silently voided the configured maximum dimensions. Its client-side media processing scales the image in the browser and posts the result back, so the server-side resize was either discarded (the browser's own 2560px copy replaced the main file) or rejected with a 400, because core validates an `original` sideload against the stored dimensions. While GD is available the plugin now keeps the pipeline server-side through the `wp_client_side_media_processing_enabled` filter
+* Fixed: sub-sizes posted back to `/wp/v2/media/{id}/sideload` were resized a second time despite already being sized by the browser. Sideloads, and media created with `generate_sub_sizes=false`, are now left untouched
+* Tested against WordPress 7.1
+
 = 1.3.0 =
 * Improvement: Fail-safe uploads — if any resize step fails, the original image is now uploaded unchanged instead of the whole upload being aborted with an error
 * Improvement: Runtime GD check — if the GD extension disappears after activation, resizing is skipped safely instead of causing a fatal error on upload; a notice is shown on the settings page
@@ -187,6 +192,11 @@ Wordpress 是很流行的 CMS 系統，很多網站都採用這個來部署，�
 2. 圖片上傳效果展示
 
 == Changelog ==
+
+= 1.4.0 =
+* 修正：WordPress 7.1 會讓設定的最大尺寸失效。它的用戶端媒體處理在瀏覽器裡縮圖後再回傳，導致伺服器端的縮圖結果不是被瀏覽器自己的 2560px 版本覆蓋，就是因為核心會用已儲存的尺寸驗證 `original` sideload 而直接回 400。只要 GD 可用，外掛現在會透過 `wp_client_side_media_processing_enabled` 濾鏡把流程留在伺服器端
+* 修正：回傳到 `/wp/v2/media/{id}/sideload` 的各尺寸縮圖會被重複縮一次，但它們已經由瀏覽器縮好了。現在 sideload 以及帶 `generate_sub_sizes=false` 的媒體建立都不再處理
+* 已針對 WordPress 7.1 測試
 
 = 1.3.0 =
 * 改善：上傳失敗安全機制——任何縮圖步驟失敗時，直接以原圖放行上傳，不再中斷整個上傳流程

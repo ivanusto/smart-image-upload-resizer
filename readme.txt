@@ -2,9 +2,9 @@
 Contributors: ivanusto
 Tags: image, resize, upload, webp, avif
 Requires at least: 5.0
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,11 @@ Since 1.3.0, any failure (unreadable image, missing GD function, save error) let
 2. Image upload effect demonstration
 
 == Changelog ==
+= 1.4.0 =
+* Fixed: WordPress 7.1 silently voided the configured maximum dimensions. Its client-side media processing scales the image in the browser and posts the result back, so the server-side resize this plugin performs was either discarded — the browser's own 2560px copy replaced the main file — or rejected outright, because core validates an `original` sideload against the stored dimensions and returns a 400 once they no longer match. While GD is available the plugin now keeps the pipeline server-side through the `wp_client_side_media_processing_enabled` filter, which is where the configured bounds are actually enforced. Without GD the plugin is a no-op, so the browser pipeline is left alone.
+* Fixed: sub-sizes posted back to `/wp/v2/media/{id}/sideload` were run through the resize step a second time. They reach the same upload prefilter as a normal upload but were already sized by the browser. Sideloads, and media created with `generate_sub_sizes=false`, are now left untouched — a safety net for the case where another plugin forces client-side processing back on.
+* Tested against WordPress 7.1.
+
 = 1.3.0 =
 * Improvement: Fail-safe uploads — if any resize step fails, the original image is now uploaded unchanged instead of the whole upload being aborted with an error.
 * Improvement: Runtime GD check — if the GD extension disappears after activation (e.g. PHP version change), resizing is skipped safely instead of causing a fatal error on upload; a notice is shown on the settings page.

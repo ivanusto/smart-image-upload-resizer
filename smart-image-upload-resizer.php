@@ -3,7 +3,7 @@
  * Plugin Name: Smart Image Upload Resizer
  * Plugin URI: https://github.com/ivanusto/smart-image-upload-resizer
  * Description: Automatically resizes uploaded images to configurable maximum dimensions, with WebP and AVIF support.
- * Version: 1.3.0
+ * Version: 1.4.0
  * Author: Ivan Lin
  * Author URI: https://yblog.org/
  * Text Domain: smart-image-upload-resizer
@@ -36,6 +36,72 @@ class SmartImageUploadResizer {
         add_action('admin_init', [$this, 'settingsInit']);
         add_filter('wp_handle_upload_prefilter', [$this, 'preHandleUpload']);
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), [$this, 'addSettingsLink']);
+
+        // WordPress 7.1 client-side media processing moves scaling and sub-size
+        // generation into the browser: the initial POST /wp/v2/media stores the
+        // untouched original and the client later sideloads its own scaled copy
+        // and sub-sizes generated from the full-resolution file. A server-side
+        // resize of the original in that flow either breaks the upload outright
+        // (an 'original' sideload is validated against the stored dimensions and
+        // gets a 400) or silently voids the configured bounds (the client's
+        // 2560px 'scaled' copy replaces the main file). Keeping processing
+        // server-side is the only way the configured maximums reliably apply.
+        add_filter('wp_client_side_media_processing_enabled', [$this, 'maybeDisableClientSideProcessing']);
+    }
+
+    /**
+     * Disable WordPress 7.1+ client-side media processing while this plugin can
+     * actually resize, so uploads keep flowing through the server-side pipeline
+     * where the configured bounds are enforced.
+     *
+     * Without GD this plugin is a no-op, so the browser pipeline is left alone.
+     */
+    public function maybeDisableClientSideProcessing($enabled) {
+        return extension_loaded('gd') ? false : $enabled;
+    }
+
+    /**
+     * Whether the current request is the WordPress 7.1+ REST sub-size sideload
+     * endpoint (POST /wp/v2/media/{id}/sideload), which uploads derivative
+     * files for an existing attachment rather than new media.
+     */
+    private static function isRestMediaSideloadRequest() {
+        if (!defined('REST_REQUEST') || !REST_REQUEST) {
+            return false;
+        }
+
+        $route = '';
+        if (isset($GLOBALS['wp']->query_vars['rest_route']) && is_string($GLOBALS['wp']->query_vars['rest_route'])) {
+            $route = $GLOBALS['wp']->query_vars['rest_route'];
+        } elseif (isset($_SERVER['REQUEST_URI'])) {
+            $path  = wp_parse_url(sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])), PHP_URL_PATH);
+            $route = is_string($path) ? $path : '';
+        }
+
+        return (bool) preg_match('#/wp/v2/media/\d+/sideload/?$#', $route);
+    }
+
+    /**
+     * Whether the current request is a REST media create that opted out of
+     * server-side sub-size generation (generate_sub_sizes=false), i.e. the
+     * first request of the WordPress 7.1+ client-side processing flow.
+     */
+    private static function isClientSideMediaCreateRequest() {
+        if (!defined('REST_REQUEST') || !REST_REQUEST) {
+            return false;
+        }
+
+        // The client sends the parameter as a form field (multipart) or query
+        // arg (raw body), so $_REQUEST covers both transports.
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only feature detection, no state change.
+        if (!isset($_REQUEST['generate_sub_sizes'])) {
+            return false;
+        }
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $value = sanitize_text_field(wp_unslash($_REQUEST['generate_sub_sizes']));
+
+        return false === rest_sanitize_boolean($value);
     }
 
     public function loadTextdomain() {
@@ -135,6 +201,21 @@ class SmartImageUploadResizer {
     public function preHandleUpload($file) {
         // GD may have been removed after activation (e.g. PHP version change)
         if (!extension_loaded('gd')) {
+            return $file;
+        }
+
+        // Defense in depth for the WordPress 7.1 client-side media processing
+        // flow (normally already prevented by maybeDisableClientSideProcessing,
+        // but another plugin may force the flag back on, and REST clients can
+        // send generate_sub_sizes=false regardless of the flag):
+        //
+        // - /wp/v2/media/{id}/sideload uploads derivative files for an existing
+        //   attachment. Resizing an 'original' sideload fails core's dimension
+        //   validation (400), and sub-sizes were already sized by the client.
+        // - A media create with generate_sub_sizes=false stores the original the
+        //   client will validate later 'original'/'scaled' sideloads against, so
+        //   it must be stored untouched.
+        if (self::isRestMediaSideloadRequest() || self::isClientSideMediaCreateRequest()) {
             return $file;
         }
 
